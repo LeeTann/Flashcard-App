@@ -2,8 +2,12 @@ const express = require('express')
 const dotenv = require('dotenv')
 const colors = require('colors')
 const morgan = require('morgan')
+const connectMongoDB = require('./db/db')
 
 dotenv.config({ path: '.env'})
+
+// Connect to MongoDB
+connectMongoDB()
 
 // Initialize express app
 const app = express()
