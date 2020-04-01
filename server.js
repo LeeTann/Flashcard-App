@@ -12,6 +12,13 @@ connectMongoDB()
 // Initialize express app
 const app = express()
 
+// Bodyparser middleware
+app.use(express.json())
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
+
 app.get('/', (req, res) => res.send('Hello. Testing server'))
 
 // process.env is how you access the global config file
