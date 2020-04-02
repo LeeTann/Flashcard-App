@@ -9,7 +9,7 @@ const FlashcardSchema = new mongoose.Schema({
   answer: {
     type: String,
     trim: true,
-    required: [true, "Please proved an answer"]
+    required: [true, "Please provide an answer"]
   }
 })
 

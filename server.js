@@ -4,10 +4,7 @@ const colors = require('colors')
 const morgan = require('morgan')
 const connectMongoDB = require('./db/db')
 
-dotenv.config({ path: '.env'})
-
-// Connect to MongoDB
-connectMongoDB()
+const flashCardRouter = require('./routes/flashcards')
 
 // Initialize express app
 const app = express()
@@ -15,11 +12,21 @@ const app = express()
 // Bodyparser middleware
 app.use(express.json())
 
+// DB config
+dotenv.config({ path: '.env'})
+
+// Connect to MongoDB
+connectMongoDB()
+
+// Connect routes to app
+app.use('/api', flashCardRouter)
+
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-app.get('/', (req, res) => res.send('Hello. Testing server'))
+app.get('/', (req, res) => res.status(200).json({ api: "Server up and running"}))
 
 // process.env is how you access the global config file
 const PORT = process.env.PORT || 5000
