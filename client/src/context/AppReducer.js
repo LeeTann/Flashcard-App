@@ -9,6 +9,13 @@ export default (state, action) => {
         loading: false,
         flashcards: action.payload
       }
+
+    case ADD_FLASHCARD:
+      return {
+        ...state,
+        // Get the intial array of cards in addition to the new card
+        flashcards: [...state.flashcards, action.payload]
+      }
     
     case FLASHCARD_ERROR:
       return {

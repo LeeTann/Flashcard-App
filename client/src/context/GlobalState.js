@@ -16,7 +16,8 @@ export const GlobalContext = createContext(initialState)
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(AppReducer, initialState)
 
-  // Actions
+  // ACTIONS
+  // Get flashcards
   async function getFlashcards() {
     try {
       const res = await axios.get('/api/flashcard')
@@ -33,12 +34,34 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
+  // Add a flashcard
+  async function addFlashcard(newFlashcard) {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    try {
+      const res = await axios.post('/api/flashcard', newFlashcard, headers)
+
+      dispatch({
+        type: ADD_FLASHCARD,
+        payload: res.data.data
+      })
+    } catch (err) {
+      dispatch({
+        type: FLASHCARD_ERROR,
+        payload: err
+      })
+    }
+  }
+
   return (
     <GlobalContext.Provider value={{
       flashcards: state.flashcards,
       error: state.error,
       loading: state.loading,
       getFlashcards,
+      addFlashcard
     }}>
       {children}
     </GlobalContext.Provider>
