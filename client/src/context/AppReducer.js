@@ -16,6 +16,12 @@ export default (state, action) => {
         // Get the intial array of cards in addition to the new card
         flashcards: [...state.flashcards, action.payload]
       }
+
+    case DELETE_FLASHCARD:
+      return {
+        ...state,
+        flashcards: state.flashcards.filter(flashcard => flashcard._id !== action.payload)
+      }
     
     case FLASHCARD_ERROR:
       return {

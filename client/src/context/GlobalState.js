@@ -29,7 +29,7 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       dispatch({
         type: FLASHCARD_ERROR,
-        payload: err
+        payload: err.response.data.error
       })
     }
   }
@@ -50,7 +50,24 @@ export const GlobalProvider = ({ children }) => {
     } catch (err) {
       dispatch({
         type: FLASHCARD_ERROR,
-        payload: err
+        payload: err.response.data.error
+      })
+    }
+  }
+
+  // Delete a flashcard
+  async function deleteFlashcard(id) {
+    try {
+      await axios.delete(`api/flashcard/${id}`)
+
+      dispatch({
+        type: DELETE_FLASHCARD,
+        payload: id
+      })
+    } catch (err) {
+      dispatch({
+        type: FLASHCARD_ERROR,
+        payload: err.response.data.error
       })
     }
   }
@@ -61,7 +78,8 @@ export const GlobalProvider = ({ children }) => {
       error: state.error,
       loading: state.loading,
       getFlashcards,
-      addFlashcard
+      addFlashcard,
+      deleteFlashcard
     }}>
       {children}
     </GlobalContext.Provider>

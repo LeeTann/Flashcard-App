@@ -3,7 +3,7 @@ import { GlobalContext } from '../context/GlobalState'
 import { FlashCard } from './FlashCard'
 
 export const FlashCards = () => {
-  const { flashcards, getFlashcards } = useContext(GlobalContext)
+  const { flashcards, getFlashcards, deleteFlashcard } = useContext(GlobalContext)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFront, setIsFront] = useState(true)
   
@@ -26,7 +26,7 @@ export const FlashCards = () => {
   }
   
   const currentCard = flashcards && flashcards.length && flashcards[currentIndex]
-  
+
   return (
     <div>
       <div>
@@ -39,6 +39,11 @@ export const FlashCards = () => {
         <button className="btn" onClick={handlePreviousCard}>Previous</button>
         <button className="btn" onClick={handleNextCard}>Next</button>
       </div>
+      <div className="btn" onClick={() => {
+        deleteFlashcard(currentCard._id)
+        setCurrentIndex((currentIndex - 1 + flashcards.length) % flashcards.length )
+        setIsFront(true)
+      }}>Delete</div>
     </div>
   )
 }

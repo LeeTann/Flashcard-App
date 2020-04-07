@@ -48,7 +48,7 @@ router.delete('/flashcard/:id', async (req, res) => {
     if (!flashcard) {
       return res.status(404).json({
         success: false,
-        error: 'Count not delete. No flashcard found'
+        error: 'Could not delete. No flashcard found'
       })
     }
 
@@ -59,6 +59,30 @@ router.delete('/flashcard/:id', async (req, res) => {
       data: {}
     })
 
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error'
+    })
+  }
+})
+
+// Update a flashcard
+router.put('/flashcard/:id', async (req, res) => {
+  const id = await FlashCard.findById(req.params.id)
+
+  try {
+    const { question, answer } = req.body   
+    if (question && answer) {
+      const updateCard = await FlashCard.findByIdAndUpdate(id, req.body, {new: true})
+      if (updateCard) {
+        res.status(200).json(updateCard)
+      } else {
+        res.status(404).json({ message: 'No flashcard with that ID exist'})
+      }
+    } else {
+      res.status(400).json({ message: 'Missing required info'})
+    }
   } catch (err) {
     return res.status(500).json({
       success: false,
