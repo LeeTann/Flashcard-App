@@ -24,6 +24,16 @@ export const FlashCards = () => {
     setCurrentIndex((currentIndex - 1 + flashcards.length) % flashcards.length )
     setIsFront(true)
   }
+
+  const handleDelete = () => {
+    deleteFlashcard(currentCard._id)
+
+    if (currentIndex === 0) {
+      handleNextCard()
+    } else if (currentIndex === flashcards.length -1) {
+      handlePreviousCard()
+    }
+  }
   
   const currentCard = flashcards && flashcards.length && flashcards[currentIndex]
 
@@ -39,11 +49,7 @@ export const FlashCards = () => {
         <button className="btn" onClick={handlePreviousCard}>Previous</button>
         <button className="btn" onClick={handleNextCard}>Next</button>
       </div>
-      <div className="btn" onClick={() => {
-        deleteFlashcard(currentCard._id)
-        setCurrentIndex((currentIndex - 1 + flashcards.length) % flashcards.length )
-        setIsFront(true)
-      }}>Delete</div>
+      <div className="btn" onClick={handleDelete}>Delete</div>
     </div>
   )
 }
