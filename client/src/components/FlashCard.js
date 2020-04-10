@@ -1,12 +1,8 @@
-import React, { useContext, useState } from 'react'
+import React from 'react'
 import './FlashCard.css'
-import { GlobalContext } from '../context/GlobalState'
 
 export const FlashCard = ({ currentCard, isFront }) => {
-  // const { flashcards, deleteFlashcard } = useContext(GlobalContext)
-  // const [currentIndex, setCurrentIndex] = useState(0)
 
-  
   return (
     <div className="card-container">
       <div className={currentCard ? "card visibility" : "card"}>

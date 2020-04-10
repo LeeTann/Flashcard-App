@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 import AppReducer from './AppReducer'
-import { GET_FLASHCARDS, ADD_FLASHCARD, DELETE_FLASHCARD, FLASHCARD_ERROR } from './types'
+import { GET_FLASHCARDS, ADD_FLASHCARD, DELETE_FLASHCARD, UPDATE_FLASHCARD, FLASHCARD_ERROR } from './types'
 import axios from 'axios'
 
 const initialState = {
@@ -55,6 +55,9 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
+  // Get a flashcard by ID
+
+
   // Delete a flashcard
   async function deleteFlashcard(id) {
     try {
@@ -72,6 +75,27 @@ export const GlobalProvider = ({ children }) => {
     }
   }
 
+  // Update a flashcardupdatedCardInfo
+  async function updateFlashcard(updatedCardInfo) {
+    const headers = {
+      'Content-Type': 'application/json'
+    }
+
+    try {
+      const res = await axios.put(`/api/flashcard/${updatedCardInfo._id}`, updatedCardInfo, headers)
+
+      dispatch({
+        type: UPDATE_FLASHCARD,
+        payload: res.data.data
+      })
+    } catch (err) {
+      dispatch({
+        type: FLASHCARD_ERROR,
+        payload: err.response.data.error
+      })
+    }
+  }
+
   return (
     <GlobalContext.Provider value={{
       flashcards: state.flashcards,
@@ -79,7 +103,8 @@ export const GlobalProvider = ({ children }) => {
       loading: state.loading,
       getFlashcards,
       addFlashcard,
-      deleteFlashcard
+      deleteFlashcard,
+      updateFlashcard
     }}>
       {children}
     </GlobalContext.Provider>
