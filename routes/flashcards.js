@@ -43,7 +43,7 @@ router.post('/flashcard', async (req, res) => {
 // Get a single flashcard
 router.get('/flashcard/:id', async (req, res) => {
   try {
-    const flashcardId = await flashcardId.findById(req.params.id)
+    const flashcardId = await FlashCard.findById(req.params.id)
 
     if (flashcardId) {
       return res.status(200).json({
