@@ -1,15 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { GlobalContext } from '../context/GlobalState'
 
-export const UpdateFlashcard = () => {
-  const { flashcards, getFlashcards, updateFlashcard } = useContext(GlobalContext)
-  const [currentIndex, setCurrentIndex] = useState(0)
+export const UpdateFlashcard = ({ currentCard }) => {
+  const { updateFlashcard } = useContext(GlobalContext)
   const [question, setQuestion] = useState("")
   const [answer, setAnswer] = useState("")
 
-  useEffect(() => {
-    getFlashcards()
-  }, [])
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -19,9 +15,8 @@ export const UpdateFlashcard = () => {
       answer
     }
 
-    updateFlashcard(updatedCardInfo)
+    updateFlashcard(currentCard._id, updatedCardInfo)
   }
-  const currentCard = flashcards && flashcards.length && flashcards[currentIndex]
 
   return (
     <>
@@ -29,7 +24,7 @@ export const UpdateFlashcard = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="form-control">
-          <label htmlFor="question">Question</label>
+          <label htmlFor={question}>Question</label>
           <input 
             type="text"
             value={question}
@@ -39,7 +34,7 @@ export const UpdateFlashcard = () => {
         </div>
 
         <div className="form-control">
-          <label htmlFor="answer">Answer</label>
+          <label htmlFor={answer}>Answer</label>
           <input 
             type="text"
             value={answer}

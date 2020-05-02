@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalContext } from '../context/GlobalState'
 import { FlashCard } from './FlashCard'
+import { UpdateFlashcard } from './UpdateFlashcard'
 
 export const FlashCards = () => {
   const { flashcards, getFlashcards, deleteFlashcard } = useContext(GlobalContext)
@@ -39,6 +40,7 @@ export const FlashCards = () => {
 
   return (
     <div>
+
       <div>
           <div className="progress">{currentIndex + 1}/{flashcards.length}</div>
           <div onClick={handleCardFlip}>
@@ -50,6 +52,9 @@ export const FlashCards = () => {
         <button className="btn" onClick={handleNextCard}>Next</button>
       </div>
       <div className="btn" onClick={handleDelete}>Delete</div>
+      <div>
+        <UpdateFlashcard currentCard={currentCard} isFront={isFront} />
+      </div>
     </div>
   )
 }

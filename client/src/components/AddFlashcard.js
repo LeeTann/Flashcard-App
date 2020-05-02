@@ -15,6 +15,8 @@ export const AddFlashcard = () => {
     }
 
     addFlashcard(newFlashcard)
+    setQuestion("")
+    setAnswer("")
   }
 
   return (
@@ -24,20 +26,24 @@ export const AddFlashcard = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-control">
           <label htmlFor="question">Question</label>
-          <input 
+          <textarea 
             type="text"
             value={question}
             placeholder="Enter question"
+            rows="3"
+            cols="50"
             onChange={(e) => setQuestion(e.target.value)}
           />
         </div>
 
         <div className="form-control">
           <label htmlFor="answer">Answer</label>
-          <input 
+          <textarea 
             type="text"
             value={answer}
             placeholder="Enter answer"
+            rows="10"
+            cols="50"
             onChange={(e) => setAnswer(e.target.value)}
           />
         </div>

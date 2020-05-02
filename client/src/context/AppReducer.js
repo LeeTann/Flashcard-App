@@ -1,4 +1,4 @@
-import { GET_FLASHCARDS, ADD_FLASHCARD, DELETE_FLASHCARD, UPDATE_FLASHCARD, FLASHCARD_ERROR } from './types'
+import { GET_FLASHCARDS, ADD_FLASHCARD, DELETE_FLASHCARD, UPDATE_FLASHCARD, GET_FLASHCARD, FLASHCARD_ERROR } from './types'
 
 export default (state, action) => {
   switch(action.type) {
@@ -24,6 +24,7 @@ export default (state, action) => {
       }
 
     case UPDATE_FLASHCARD:
+      console.log("from app reducer", state.flashcards)
       return {
         ...state,
         flashcards: state.flashcards.map(flashcard => flashcard._id === action.payload._id ? action.payload : flashcard)
