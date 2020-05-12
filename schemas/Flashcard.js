@@ -10,7 +10,11 @@ const FlashcardSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: [true, "Please provide an answer"]
+  },
+  subject: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'subject'
   }
 })
 
-module.exports = mongoose.model('Flashcard', FlashcardSchema)
+module.exports = Flashcard = mongoose.model('flashcard', FlashcardSchema)
