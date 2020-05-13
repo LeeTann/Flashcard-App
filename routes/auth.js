@@ -32,4 +32,48 @@ router.post('/register/user', async (req, res) => {
   }
 })
 
+// LOGIN USER
+router.post('/login/user', async (req, res) => {
+  let { email, password } = req.body
+
+  if (!email || !password) {
+    return res.status(400).json({ msg: 'Please enter all fields' })
+  }
+
+  try {
+    const user = await User.findOne({ email })
+    
+    if (!user) return res.status(400).json({ msg: 'User does not exist' })
+
+    // Validate password
+    if (bcrypt.compareSync(password, user.password)) {
+      const token = generateToken(user)
+
+      res.status(200).json({ 
+        token, 
+        message: `Welcome young master ${user.name}`,
+        userID: user.id
+      })
+    } else {
+      res.status(401).json({ msg: 'Invalid credentials'})
+    }
+  } catch (err) {
+    res.status(500).json({ msg: 'Server Error - Could not log user in'})
+  }
+})
+
+function generateToken(user) {
+  const payload = {
+    userID: user.id,
+    name: user.name,
+    email: user.email
+  }
+
+  const options = {
+    expiresIn: '1d'
+  }
+
+  return jwt.sign(payload, process.env.JWTSECRET, options)
+}
+
 module.exports = router
