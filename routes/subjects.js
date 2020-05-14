@@ -30,7 +30,7 @@ router.get('/subject', async (req, res) => {
 })
 
 // Get a single subject
-router.get('/subject', async (req, res) => {
+router.get('/subject/:id', async (req, res) => {
   try {
     const subject = await Subject.findById(req.params.id)
 
@@ -41,6 +41,42 @@ router.get('/subject', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ err: 'Could not retrieve subject'})
+  }
+})
+
+// Delete a subject
+router.delete('/subject/:id', async (req, res) => {
+  try {
+    const subject = await Subject.findById(req.params.id)
+    if (subject) {
+      await subject.remove()
+      res.status(200).json({ msg: 'Delete was successful', data: {}})
+    } else {
+      res.status(404).json({ msg: 'Could not delete. No subject fount' })
+    }
+  } catch (err) {
+    res.status(500).json({ err: 'Server error - could not remove subject' })
+  }
+})
+
+// Update a subject
+router.put('/subject/:id', async (req, res) => {
+  const subject = await Subject.findById(req.params.id)
+
+  try {
+    const { name } = req.body
+    if (name) {
+      const updateSubject = await Subject.findByIdAndUpdate(subject, req.body, {new: true})
+      if (updateSubject) {
+        res.status(200).json(updateSubject)
+      } else {
+        res.status(404).json({ msg: 'No subject with that ID exist' })
+      }
+    } else {
+      res.status(400).json({ msg: 'Missing required info' })
+    }
+  } catch (err) {
+    res.status(500).json({ msg: 'Server Error - could not update subject' })
   }
 })
 
