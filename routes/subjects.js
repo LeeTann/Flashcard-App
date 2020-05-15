@@ -1,21 +1,30 @@
 const express = require('express')
 const router = express.Router()
+const auth = require('../middleware/auth')
 
+// Bring in the required models
 const Subject = require('../schemas/Subject')
+const User = require('../schemas/User')
 
 // Create a subject
-router.post('/subject', async (req, res) => {
+router.post('/subject', auth, async (req, res) => {
   try {
-    const { name } = req.body
+    // find the userID created by the auth 
+    const user = await User.findById(req.user.userID)
 
-    const subject = await Subject.create(req.body)
-    if (subject) {
-      res.status(201).json(subject)
-    } else {
-      res.status(400).json({ msg: 'Please provide the name of subject' })
-    }
+    // create a new Subject
+    const newSubject = new Subject({
+      name: req.body.name,
+      createdBy: req.user.userID
+    })
+
+    // save the new subject
+    const subject = await newSubject.save()
+    
+    // return the subject
+    res.json(subject)
   } catch (err) {
-    res.status(500).json({ err: 'Error while trying to save subject to databse' })
+    res.status(500).json({ err: 'Error while trying to save subject to database' })
   }
 })
 

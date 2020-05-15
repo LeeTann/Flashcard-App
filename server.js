@@ -6,6 +6,7 @@ const connectMongoDB = require('./db/db')
 
 const flashCardRouter = require('./routes/flashcards')
 const authRouter = require('./routes/auth')
+const subjectRouter = require('./routes/subjects')
 
 // Initialize express app
 const app = express()
@@ -22,6 +23,7 @@ connectMongoDB()
 // Connect routes to app
 app.use('/api', flashCardRouter)
 app.use('/api', authRouter)
+app.use('/api', subjectRouter)
 
 
 if (process.env.NODE_ENV === 'development') {
