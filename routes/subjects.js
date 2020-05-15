@@ -38,7 +38,7 @@ router.get('/subject', async (req, res) => {
   }
 })
 
-// Get a single subject
+// Get a single subject by subject id
 router.get('/subject/:id', async (req, res) => {
   try {
     const subject = await Subject.findById(req.params.id)
@@ -53,13 +53,33 @@ router.get('/subject/:id', async (req, res) => {
   }
 })
 
-// Delete a subject
-router.delete('/subject/:id', async (req, res) => {
+// Get all subjects by user id
+router.get('/subject/:id/all', auth, async (req, res) => {
+  try {
+    const subject = await Subject.find({ createdBy: req.params.id })
+
+    if (subject) {
+      res.status(200).json(subject)
+    } else {
+      res.status(404).json({ msg: 'Subjects by user id not found'})
+    }
+  } catch (err) {
+    console.err(err.message)
+    res.status(500).json({ err: 'Server Error'})
+  }
+})
+
+// Delete a subject that matches user who created it
+router.delete('/subject/:id', auth, async (req, res) => {
   try {
     const subject = await Subject.findById(req.params.id)
     if (subject) {
-      await subject.remove()
-      res.status(200).json({ msg: 'Delete was successful', data: {}})
+      if (subject.createdBy.toString() === req.user.userID) {
+        await subject.remove()
+        res.status(200).json({ msg: 'Delete was successful', data: {}})
+      } else {
+        res.status(404).json({ msg: 'Not yours....could not delete. Not authorized.' })
+      }
     } else {
       res.status(404).json({ msg: 'Could not delete. No subject fount' })
     }
@@ -68,18 +88,16 @@ router.delete('/subject/:id', async (req, res) => {
   }
 })
 
-// Update a subject
-router.put('/subject/:id', async (req, res) => {
-  const subject = await Subject.findById(req.params.id)
-
+// Update a subject only when createdby id matches user the logged in
+router.put('/subject/:id', auth, async (req, res) => {
   try {
-    const { name } = req.body
-    if (name) {
-      const updateSubject = await Subject.findByIdAndUpdate(subject, req.body, {new: true})
-      if (updateSubject) {
+    const subject = await Subject.findById(req.params.id)
+    if (subject) {
+      if (subject.createdBy.toString() === req.user.userID) {
+        const updateSubject = await Subject.findByIdAndUpdate(subject, req.body, {new: true})
         res.status(200).json(updateSubject)
       } else {
-        res.status(404).json({ msg: 'No subject with that ID exist' })
+        res.status(404).json({ msg: 'You did not create the subject. Can not update!' })
       }
     } else {
       res.status(400).json({ msg: 'Missing required info' })
