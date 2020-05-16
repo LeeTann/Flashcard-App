@@ -32,7 +32,11 @@ router.post('/subject', auth, async (req, res) => {
 router.get('/subject', async (req, res) => {
   try {
     const subjects = await Subject.find()
-    return res.status(200).json(subjects)
+    return res.status(200).json({
+      success: true,
+      count: subjects.length,
+      data: subjects
+    })
   } catch (err) {
     res.status(500).json({ err: 'Could not retrieve subjects' })
   }
@@ -42,7 +46,7 @@ router.get('/subject', async (req, res) => {
 router.get('/subject/:id', async (req, res) => {
   try {
     const subject = await Subject.findById(req.params.id)
-
+    console.log(subject)
     if (subject) {
       res.status(200).json(subject)
     } else {
@@ -81,7 +85,7 @@ router.delete('/subject/:id', auth, async (req, res) => {
         res.status(404).json({ msg: 'Not yours....could not delete. Not authorized.' })
       }
     } else {
-      res.status(404).json({ msg: 'Could not delete. No subject fount' })
+      res.status(404).json({ msg: 'Could not delete. No subject found' })
     }
   } catch (err) {
     res.status(500).json({ err: 'Server error - could not remove subject' })
