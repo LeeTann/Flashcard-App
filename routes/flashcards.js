@@ -18,7 +18,8 @@ router.post('/subject/:id/flashcard', auth, async (req, res) => {
         const newFlashcard = new FlashCard({
           question: req.body.question,
           answer: req.body.answer,
-          subject: req.params.id
+          subject: req.params.id,
+          createdBy: req.user.userID
         })
         // save the new flashcard
         const flashcard = await newFlashcard.save()
@@ -69,55 +70,60 @@ router.get('/subject/:id/flashcards', auth, async (req, res) => {
 })
 
 // Get a single flashcard
-router.get('/subject/:id/flashcard/:id', async (req, res) => {
+router.get('/flashcard/:id', async (req, res) => {
   try {
-    const flashcardId = await FlashCard.findById(req.params.id)
-
-    if (flashcardId) {
-      return res.status(200).json({
-        success: true,
-        data: flashcardId
-      })
+    const flashcard = await FlashCard.findById(req.params.id)
+    if (flashcard) {  
+      return res.status(200).json(flashcard)
     } else {
-      res.status(400).json({
-        success: false,
-        error: 'No flashcard with that ID found'
-      })
-    }
-    
+      res.status(400).json({ error: 'No flashcard with that ID found' })
+    }  
   } catch (err) {
-    return res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    })
+    return res.status(500).json({ error: 'Server Error' })
   }
 })
 
 // Delete a flashcard
-router.delete('/subject/:id/flashcard/:id', async (req, res) => {
+// router.delete('/flashcard/:id', auth, async (req, res) => {
+//   try {
+//     const flashcard = await FlashCard.findById(req.params.id)
+
+//     if (!flashcard) {
+//       return res.status(404).json({ error: 'Could not delete. No flashcard found' })
+//     } else {
+//       await flashcard.remove()
+
+//       return res.status(200).json({
+//         success: true,
+//         message: 'Delete was successful!',
+//         data: {},
+//       })
+//     }
+
+//   } catch (err) {
+//     return res.status(500).json({
+//       success: false,
+//       error: 'Server Error'
+//     })
+//   }
+// })
+
+router.delete('/flashcard/:id', auth, async (req, res) => {
   try {
-    const flashcardId = await FlashCard.findById(req.params.id)
-
-    if (!flashcardId) {
-      return res.status(404).json({
-        success: false,
-        error: 'Could not delete. No flashcard found'
-      })
+    const flashcard = await FlashCard.findById(req.params.id)
+    console.log(flashcard)
+    if (flashcard) {
+      if (flashcard.createdBy.toString() === req.user.userID) {
+        await flashcard.remove()
+        res.status(200).json({ msg: 'Delete was successful', data: {} })
+      } else {
+        res.status(404).json({ msg: 'Not yours.... could not delete. Not authorized' })
+      }
     } else {
-      await flashcardId.remove()
-
-      return res.status(200).json({
-        success: true,
-        message: 'Delete was successful!',
-        data: {},
-      })
+      res.status(404).json({ msg: 'Could not delete. No flashcard found' })
     }
-
   } catch (err) {
-    return res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    })
+    res.status(500).json({ err: 'Server error - could not remove flashcard' })
   }
 })
 

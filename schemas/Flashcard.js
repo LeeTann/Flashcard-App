@@ -14,7 +14,11 @@ const FlashcardSchema = new mongoose.Schema({
   subject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'subject'
-  }
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user'
+  },
 })
 
 module.exports = Flashcard = mongoose.model('flashcard', FlashcardSchema)
