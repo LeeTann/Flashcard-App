@@ -83,31 +83,6 @@ router.get('/flashcard/:id', async (req, res) => {
   }
 })
 
-// Delete a flashcard
-// router.delete('/flashcard/:id', auth, async (req, res) => {
-//   try {
-//     const flashcard = await FlashCard.findById(req.params.id)
-
-//     if (!flashcard) {
-//       return res.status(404).json({ error: 'Could not delete. No flashcard found' })
-//     } else {
-//       await flashcard.remove()
-
-//       return res.status(200).json({
-//         success: true,
-//         message: 'Delete was successful!',
-//         data: {},
-//       })
-//     }
-
-//   } catch (err) {
-//     return res.status(500).json({
-//       success: false,
-//       error: 'Server Error'
-//     })
-//   }
-// })
-
 router.delete('/flashcard/:id', auth, async (req, res) => {
   try {
     const flashcard = await FlashCard.findById(req.params.id)
@@ -128,17 +103,17 @@ router.delete('/flashcard/:id', auth, async (req, res) => {
 })
 
 // Update a flashcard
-router.put('/subject/:id/flashcard/:id', async (req, res) => {
-  const id = await FlashCard.findById(req.params.id)
+router.put('/flashcard/:id', auth, async (req, res) => {
+  const flashcard = await FlashCard.findById(req.params.id)
 
   try {
     const { question, answer } = req.body   
     if (question && answer) {
-      const updateCard = await FlashCard.findByIdAndUpdate(id, req.body, {new: true})
-      if (updateCard) {
+      if (flashcard.createdBy.toString() === req.user.userID) {
+        const updateCard = await FlashCard.findByIdAndUpdate(flashcard, req.body, {new: true})
         res.status(200).json(updateCard)
       } else {
-        res.status(404).json({ message: 'No flashcard with that ID exist'})
+        res.status(404).json({ message: 'You did not create this flashcard and not authorized to edit'})
       }
     } else {
       res.status(400).json({ message: 'Missing required info'})
