@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { GlobalContext } from '../context/GlobalState'
+import { GlobalContext } from '../../context/GlobalState'
 import { FlashCard } from './FlashCard'
 import { UpdateFlashcard } from './UpdateFlashcard'
 
-export const FlashCards = () => {
+const FlashCards = () => {
   const { flashcards, getFlashcards, deleteFlashcard } = useContext(GlobalContext)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isFront, setIsFront] = useState(true)
@@ -58,3 +58,5 @@ export const FlashCards = () => {
     </div>
   )
 }
+
+export default FlashCards
