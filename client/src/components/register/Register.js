@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
 import AuthContext from '../../context/auth/AuthContext'
-import axios from 'axios'
 
 function Register(props) {
   const authContext = useContext(AuthContext)
@@ -18,7 +17,7 @@ function Register(props) {
       clearErrors()
     }
   }, [error, isAuthenticated, props.history])
-  
+
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value})
   }

@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 dotenv.config({ path: '.env'})
 
 function auth(req, res, next) {
-  const token = req.headers.authorization
+  const token = req.header('Authorization')
 
   // check for token
   if (!token) return res.status(401).json({ msg: "No token, authorization denied" })

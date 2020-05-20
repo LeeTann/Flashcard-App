@@ -6,6 +6,18 @@ const auth = require('../middleware/auth')
 // Bring in User Model
 const User = require('../schemas/User')
 
+// GET LOGIN USER
+router.get('/login/user', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userID)
+    console.log(user)
+    res.json(user)
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('Server Error..............')
+  }
+})
+
 // REGISTER NEW USER
 router.post('/register/user', async (req, res) => {
   let { name, email, password } = req.body
@@ -27,14 +39,21 @@ router.post('/register/user', async (req, res) => {
     
     // create new user
     const newUser = await User.create({ name, email, password })
-    return res.status(201).json(newUser)
+    const token = generateToken(newUser)
+    return res.status(201).json({
+      token,
+      message: `welcome young master ${newUser.name}`,
+      userID: newUser.id,
+      email: newUser.email,
+      password: newUser.password
+    })
   } catch (err) {
     return res.status(500).json({ msg: 'Server Error - could not create new user' })
   }
 })
 
 // LOGIN USER
-router.post('/login/user', auth, async (req, res) => {
+router.post('/login/user', async (req, res) => {
   let { email, password } = req.body
 
   if (!email || !password) {
@@ -63,17 +82,6 @@ router.post('/login/user', auth, async (req, res) => {
   }
 })
 
-// GET LOGIN USER
-router.get('/login/user', auth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id)
-    console.log(user)
-    res.json(user)
-  } catch (err) {
-    console.error(err.message)
-    res.status(500).send('Server Error')
-  }
-})
 
 function generateToken(user) {
   const payload = {
