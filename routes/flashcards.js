@@ -7,7 +7,7 @@ const Subject = require('../schemas/Subject')
 const User = require('../schemas/User')
 
 // Create a flashcard belongs to subject id.
-router.post('/subject/:id/flashcard', auth, async (req, res) => {
+router.post('/flashcard/subject/:id', auth, async (req, res) => {
   try {
     // find the subject id
     const subject = await Subject.findById(req.params.id)
@@ -37,7 +37,7 @@ router.post('/subject/:id/flashcard', auth, async (req, res) => {
 })
 
 // Get all flashcards
-router.get('/flashcard', async (req, res) => {
+router.get('/flashcard', auth, async (req, res) => {
   try {
     const flashcards = await FlashCard.find()
 
@@ -55,12 +55,12 @@ router.get('/flashcard', async (req, res) => {
 })
 
 // Get all flashcards by subject
-router.get('/subject/:id/flashcards', auth, async (req, res) => {
+router.get('/flashcard/subject/:id', auth, async (req, res) => {
   try {
-    const flashcard = await FlashCard.find({ subject: req.params.id })
+    const flashcards = await FlashCard.find({ subject: req.params.id })
 
-    if (flashcard) {
-      res.status(200).json(flashcard)
+    if (flashcards) {
+      return res.status(200).json(flashcards)
     } else {
       res.status(404).json({ msg: 'Flashcards by subject id not found' })
     }
@@ -74,7 +74,11 @@ router.get('/flashcard/:id', async (req, res) => {
   try {
     const flashcard = await FlashCard.findById(req.params.id)
     if (flashcard) {  
-      return res.status(200).json(flashcard)
+      if (flashcard.createdBy.toString() === req.user.userID) {
+        return res.status(200).json(flashcard)
+      } else {
+        res.status(404).json({ msg: 'Not yours.... could not get. Not authorized' })
+      }
     } else {
       res.status(400).json({ error: 'No flashcard with that ID found' })
     }  

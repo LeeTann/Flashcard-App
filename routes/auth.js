@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const auth = require('../middleware/auth')
 
 // Bring in User Model
 const User = require('../schemas/User')
@@ -33,7 +34,7 @@ router.post('/register/user', async (req, res) => {
 })
 
 // LOGIN USER
-router.post('/login/user', async (req, res) => {
+router.post('/login/user', auth, async (req, res) => {
   let { email, password } = req.body
 
   if (!email || !password) {
@@ -59,6 +60,18 @@ router.post('/login/user', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ msg: 'Server Error - Could not log user in'})
+  }
+})
+
+// GET LOGIN USER
+router.get('/login/user', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    console.log(user)
+    res.json(user)
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send('Server Error')
   }
 })
 
