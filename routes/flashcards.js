@@ -37,7 +37,7 @@ router.post('/flashcard/subject/:id', auth, async (req, res) => {
 })
 
 // Get all flashcards
-router.get('/flashcard', auth, async (req, res) => {
+router.get('/flashcard', async (req, res) => {
   try {
     const flashcards = await FlashCard.find()
 

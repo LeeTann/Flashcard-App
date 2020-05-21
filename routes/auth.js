@@ -27,7 +27,15 @@ router.post('/register/user', async (req, res) => {
     
     // create new user
     const newUser = await User.create({ name, email, password })
-    return res.status(201).json(newUser)
+
+    const token = generateToken(newUser)
+
+    return res.status(201).json({ 
+        token, 
+        message: `Welcome young master ${newUser.name}`,
+        userID: newUser.id,
+        email: newUser.email
+      })
   } catch (err) {
     return res.status(500).json({ msg: 'Server Error - could not create new user' })
   }
@@ -66,7 +74,7 @@ router.post('/login/user', auth, async (req, res) => {
 // GET LOGIN USER
 router.get('/login/user', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.userID)
     console.log(user)
     res.json(user)
   } catch (err) {

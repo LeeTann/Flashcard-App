@@ -24,29 +24,45 @@ const AuthState = (props) => {
 
   const [state, dispatch] = useReducer(AuthReducer, initialState)
 
-  // Set token
-  const setAuthToken = (token) => {
-  if (token) {
-    axios.defaults.headers['Authorization'] = token
-  } else {
-    delete axios.defaults.headers['Authorization']
-  }
-}
+//   // Set token
+//   const setAuthToken = (token) => {
+//   if (!token) {
+//     axios.defaults.headers['Authorization'] = token
+//   } else {
+//     delete axios.defaults.headers['Authorization']
+//   }
+// }
   // ACTIONS
   // Load User
-  const loadUser = async () => {
-    setAuthToken(localStorage.token)
-
-    try {
-      const res = await axios.get('/api/login/user')
-
-      dispatch({
+  const loadUser = () => (dispatch, getState) => {
+    
+    axios.get('/api/login/user', tokenConfig(getState))
+      .then(res => dispatch({
         type: USER_LOADED,
         payload: res.data
+      }))
+      .catch(err => {
+        dispatch({
+          type: AUTH_ERROR
+        })
       })
-    } catch (err) {
-      dispatch({ type: AUTH_ERROR })
+  }
+
+  const tokenConfig = getState => {
+    // Get token from localstorage
+    const token = getState().auth.token
+    // Headers
+    const config = {
+      headers: {
+        "Content-type": "application/json"
+      }
     }
+    // If token, add to headers
+    console.log("token", token)
+    if(token) {
+      config.headers.authorization = token
+    }
+    return config
   }
 
   // Register User
@@ -57,12 +73,12 @@ const AuthState = (props) => {
 
     try {
       const res = await axios.post('/api/register/user', formData, headers)
-      console.log("res.......",res.data)
 
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res
       })
+      loadUser()
     } catch (err) {
       dispatch({
         type: REGISTER_FAIL,
