@@ -3,7 +3,7 @@ import AuthContext from '../../context/auth/AuthContext'
 
 function Register(props) {
   const authContext = useContext(AuthContext)
-  const { registerUser, error, clearErrors, isAuthenticated } = authContext
+  const { registerUser, isAuthenticated } = authContext
 
   const [formData, setFormData] = useState({ name: '', email: '', password: '' })
   const { name, email, password } = formData
@@ -12,11 +12,7 @@ function Register(props) {
     if (isAuthenticated) {
       props.history.push('/')
     }
-    if (error === 'User already exist') {
-      alert(error, 'danger')
-      clearErrors()
-    }
-  }, [error, isAuthenticated, props.history])
+  }, [isAuthenticated, props.history])
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value})

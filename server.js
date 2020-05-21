@@ -1,5 +1,6 @@
 const express = require('express')
 const dotenv = require('dotenv')
+const cors = require('cors')
 const colors = require('colors')
 const morgan = require('morgan')
 const connectMongoDB = require('./db/db')
@@ -11,6 +12,8 @@ const subjectRouter = require('./routes/subjects')
 // Initialize express app
 const app = express()
 
+// Cors
+app.use(cors())
 // Bodyparser middleware
 app.use(express.json())
 

@@ -3,7 +3,7 @@ import AuthContext from '../../context/auth/AuthContext'
 
 function Login(props) {
   const authContext = useContext(AuthContext)
-  const { loginUser, error, clearErrors, isAuthenticated } = authContext
+  const { loginUser, isAuthenticated } = authContext
 
   const [formData, setFormData] = useState({ email: '', password: '' })
   const { email, password } = formData
@@ -12,11 +12,7 @@ function Login(props) {
     if (isAuthenticated) {
       props.history.push('/')
     }
-    if (error === 'Invalid Credentials') {
-      alert(error, 'danger')
-      clearErrors()
-    }
-  }, [error, isAuthenticated, props.history])
+  }, [isAuthenticated, props.history])
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value})
@@ -30,6 +26,8 @@ function Login(props) {
     } else {
       loginUser(formData)
     }
+
+    console.log("clicked")
   }
 
   return (

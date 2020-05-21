@@ -29,11 +29,11 @@ const AuthState = (props) => {
   // ACTIONS
   // Load User
   const loadUser = async () => {
-    console.log(localStorage.token)
     setAuthToken(localStorage.token)
 
     try {
       const res = await axios.get('/api/login/user')
+      console.log("res", res)
 
       dispatch({
         type: USER_LOADED,
@@ -63,7 +63,7 @@ const AuthState = (props) => {
     } catch (err) {
       dispatch({
         type: REGISTER_FAIL,
-        payload: err.response.data.msg
+        payload: err
       })
     }
   }
