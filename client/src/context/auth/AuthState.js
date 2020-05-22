@@ -24,14 +24,6 @@ const AuthState = (props) => {
 
   const [state, dispatch] = useReducer(AuthReducer, initialState)
 
-//   // Set token
-//   const setAuthToken = (token) => {
-//   if (!token) {
-//     axios.defaults.headers['Authorization'] = token
-//   } else {
-//     delete axios.defaults.headers['Authorization']
-//   }
-// }
   // ACTIONS
   // Load User
   const loadUser = () => (dispatch, getState) => {
@@ -61,6 +53,8 @@ const AuthState = (props) => {
     console.log("token", token)
     if(token) {
       config.headers.authorization = token
+    } else {
+      delete config.headers.authorization
     }
     return config
   }
@@ -76,7 +70,7 @@ const AuthState = (props) => {
 
       dispatch({
         type: REGISTER_SUCCESS,
-        payload: res
+        payload: res.data
       })
       loadUser()
     } catch (err) {
@@ -100,6 +94,8 @@ const AuthState = (props) => {
         type: LOGIN_SUCCESS,
         payload: res.data
       })
+
+      loadUser()
     } catch (err) {
       dispatch({
         type: LOGIN_FAIL,

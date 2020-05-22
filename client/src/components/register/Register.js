@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
 import AuthContext from '../../context/auth/AuthContext'
-import axios from 'axios'
 
 function Register(props) {
   const authContext = useContext(AuthContext)
@@ -11,7 +10,7 @@ function Register(props) {
 
   useEffect(() => {
     if (isAuthenticated) {
-      props.history.push('/')
+      props.history.push('/flashcard')
     }
     if (error === 'User already exist') {
       alert(error, 'danger')
